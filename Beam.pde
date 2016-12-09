@@ -60,7 +60,7 @@ void draw() {
         oc.isBang = true ;
       }
             
-    }
+    } /*  for(int k = bos.size()-1 ; k >= 0 ; k--)  */
 
     if( objects.get(i).isBang == true ) {
       // store the object location for the central point of Bang .
@@ -71,7 +71,8 @@ void draw() {
       oc.run() ;
     }
     
-  }
+  } /*  for(int i = objects.size()-1 ; i >= 0 ; i--)  */
+
 
   // beaming Objects process
   for(int j = bos.size()-1 ; j >= 0 ; j--) {
@@ -81,18 +82,22 @@ void draw() {
     }
   }
   
+  
   /* the central point of a Bang .
      store six bang-fire from a central point of Bang .
    */
-  for(int m = 0 ; m < bangCenters.size() ; m++) {
+  for(int m = bangCenters.size()-1 ; m >= 0 ; m--) {
     PVector bcenter = bangCenters.get(m) ;
     
-    for(int n = 0 ; n < 6 ; n++) {
+    for(int n = 0 ; n < bangStarList.size() ; n++) {
       BangOt bangOt = new BangOt( bcenter , bangStarList.get(n) ) ;
       bns.add(bangOt);
     }
-        
+    
+    // After storing Bang-Object , remove all Bang-Center-Point data .
+    bangCenters.remove(m);
   }
+  
   
   // Bang-Fire display
   for(int p = bns.size()-1 ; p >= 0 ; p--) {
