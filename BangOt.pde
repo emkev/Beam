@@ -9,7 +9,7 @@ class BangOt extends Particle {
   
   BangOt( PVector l , PVector v ) {
     super( l , v );
-    lifeSpan = 100 ;
+    lifeSpan = 20 ;
   }
   
   void run() {
