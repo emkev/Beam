@@ -3,12 +3,12 @@
    2016.12.09
 */
 
-Fighter fighter ;
-ArrayList<Object> objects ; 
-ArrayList<BeamingOt> bos ;
-ArrayList<BangOt> bns ;
-ArrayList<PVector> bangCenters ;
-ArrayList<PVector> bangStarList ;
+Fighter fighter ; // attacking-ship
+ArrayList<Object> objects ; // object-ship
+ArrayList<BeamingOt> bos ; // Beaming-ray
+ArrayList<BangOt> bns ; // Bang-Fire
+ArrayList<PVector> bangCenters ; // Bang-Fire-Center-Point
+ArrayList<PVector> bangStarList ; // Bang-Fire
 float starAngle ;
 
 void setup() {
@@ -41,19 +41,21 @@ void draw() {
   
   fighter.run();
 
-  // 
+  // All object-ships
   for(int i = objects.size()-1 ; i >= 0 ; i--) {
     
     Object oc = objects.get(i);
     
+    // All Beaming-rays
     for(int k = bos.size()-1 ; k >= 0 ; k--) {
       
-      // 
       BeamingOt bo = bos.get(k) ;
+
+      // judge that whether hitting .
       float dist = PVector.dist( oc.location , bo.location ) ;
 
-      /* beamingObject has reached a object , remove the beamingObject .
-         And be ready to remove the object .
+      /* beaming-ray has hitted a object-ship , remove the beaming point .
+         And being ready to remove the object-ship .
       */
       if( dist > 0 && dist <= 10 ) {
         bos.remove(k);
@@ -62,8 +64,9 @@ void draw() {
             
     } /*  for(int k = bos.size()-1 ; k >= 0 ; k--)  */
 
+    // if a object has been hitted ...
     if( objects.get(i).isBang == true ) {
-      // store the object location for the central point of Bang .
+      // store the object-ship (has been hitted) location for the central point of Bang .
       bangCenters.add( objects.get(i).location );
       objects.remove(i);
     }
@@ -74,17 +77,18 @@ void draw() {
   } /*  for(int i = objects.size()-1 ; i >= 0 ; i--)  */
 
 
-  // beaming Objects process
+  // beaming-rays process ...
   for(int j = bos.size()-1 ; j >= 0 ; j--) {
     bos.get(j).run();
+    // if beaming-ray-point times out , then it disappears 
     if( bos.get(j).lifeSpan < 0 ) {
       bos.remove(j);
     }
   }
   
   
-  /* the central point of a Bang .
-     store six bang-fire from a central point of Bang .
+  /* the Bang central points process ...
+     store six bang-fire (from the central point of a Bang) for each Bang .
    */
   for(int m = bangCenters.size()-1 ; m >= 0 ; m--) {
     PVector bcenter = bangCenters.get(m) ;
@@ -94,18 +98,21 @@ void draw() {
       bns.add(bangOt);
     }
     
-    // After storing Bang-Object , remove all Bang-Center-Point data .
+    // After storing Bang-Fire , remove all Bang-Center-Point data .
+    // It is necessary .
     bangCenters.remove(m);
   }
   
   
   // Bang-Fire display
   for(int p = bns.size()-1 ; p >= 0 ; p--) {
+    
     BangOt bangOt = bns.get(p) ;
     
-    if(bangOt.lifeSpan < 0) 
+    if(bangOt.lifeSpan < 0) { 
       bns.remove(p);
-      
+    }
+    
     bangOt.run();
     
   }
@@ -119,6 +126,7 @@ void mousePressed() {
   bm.normalize();
   bm.mult(2);
   
+  // Fighter Fires !  :)
   BeamingOt bo = new BeamingOt( fighter.location , bm ) ;
   bos.add(bo);
 }
