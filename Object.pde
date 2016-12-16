@@ -11,6 +11,7 @@ class Object extends Particle {
   }
   
   void display() {
+    fill(50 , 50 , 100);
     ellipse(location.x , location.y , 16 , 16) ;
   }
   
