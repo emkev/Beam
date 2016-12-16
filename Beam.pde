@@ -17,7 +17,7 @@ PVector FighterSpeed ;
 
 void setup() {
   
-  size(640 , 360);
+  size(1200 , 600);
 
   BeamingOtSpeed = 6 ;
   ObjectsNum = 10 ;
@@ -147,6 +147,20 @@ void keyPressed() {
     for(int i = 0 ; i < ObjectsNum ; i++) {
       objects.add( new Object() );
     }
+  }
+  else if( key == 'a' || key == 'A' ) {
+    fighter.turnLeft();
+  }
+  else if( key == 'k' || key == 'K' ) {
+    fighter.turnRight();
+  }
+  else if( key == 't' || key == 'T' ) {
+    fighter.forwardRun();
+  }
+  else if( key == 'b' || key == 'B' ) {
+    fighter.reverseRun();
+  }  
+  else {
   }
 }
 
