@@ -12,7 +12,15 @@ class Fighter extends Particle {
   }
   
   void display() {
-    ellipse(location.x , location.y , 8 , 8);
+    fill(204 , 102 , 0) ;
+    ellipse( location.x , location.y , 20 , 20 );
+    ellipse( location.x , location.y ,  8 ,  8 );
+    
+    // four circles
+    ellipse( location.x-8  , location.y , 2 , 2 );
+    ellipse( location.x+8 , location.y ,  2 , 2 );
+    ellipse( location.x , location.y-8 ,  2 , 2 );
+    ellipse( location.x , location.y+8 ,  2 , 2 );
   }
   
 }
