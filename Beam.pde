@@ -1,7 +1,8 @@
 
-/* 2016.12.08 , 
+/* 2016.12.08 
    2016.12.09
    2016.12.16
+   2016.12.18
 */
 
 Fighter fighter ; // attacking-ship
@@ -96,13 +97,13 @@ void draw() {
   
   
   /* the Bang central points process ...
-     store six bang-fire (from the central point of a Bang) for each Bang .
+     store many bang-fire (from the central point of a Bang) for each Bang .
    */
   for(int m = bangCenters.size()-1 ; m >= 0 ; m--) {
     PVector bcenter = bangCenters.get(m) ;
     
     for(int n = 0 ; n < bangStarList.size() ; n++) {
-      BangOt bangOt = new BangOt( bcenter , bangStarList.get(n) ) ;
+      BangOt bangOt = new BangOt( bcenter , bangStarList.get(n).get() ) ;
       bns.add(bangOt);
     }
     
@@ -160,6 +161,9 @@ void keyPressed() {
   else if( key == 'b' || key == 'B' ) {
     fighter.reverseRun();
   }  
+  else if( key == 'u' || key == 'U' ) {
+    FireCircle();
+  }    
   else {
   }
 }
@@ -261,3 +265,26 @@ void bangStarListProcessFor12() {
   bangStarList.add(BangStar12);
 
 }
+
+// 2016.12.18 , fire circle-beaming . Bang ! Bang ! Bang !
+void FireCircle() {
+    
+  for(int i = 0 ; i < bangStarList.size() ; i++) {
+    
+    PVector bmv = bangStarList.get(i).get() ;
+    /* NOTE !!!
+       PVector bmv = bangStarList.get(i) ;
+       Means that : 
+       "bmv" IS the "bangStarList" factor .
+       Operating "bmv" IS operating the "bangStarList" factor .
+    */
+    bmv.normalize();
+    bmv.mult( BeamingOtSpeed );
+    
+    BeamingOt bmot = new BeamingOt( fighter.location , bmv ) ;
+    bos.add(bmot);
+
+  }
+  
+}
+
