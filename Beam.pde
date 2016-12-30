@@ -3,18 +3,20 @@
    2016.12.09
    2016.12.16
    2016.12.18
+   2016.12.30 , 12.31
 */
 
-Fighter fighter ; // attacking-ship
-ArrayList<Object> objects ; // object-ship
-ArrayList<BeamingOt> bos ; // Beaming-ray
-ArrayList<BangOt> bns ; // Bang-Fire
-ArrayList<PVector> bangCenters ; // Bang-Fire-Center-Point
+Fighter fighter ;                 // attacking-ship
+ArrayList<Object> objects ;       // object-ship
+ArrayList<BeamingOt> bos ;        // Beaming-ray
+ArrayList<BangOt> bns ;           // Bang-Fire
+ArrayList<PVector> bangCenters ;  // Bang-Fire-Center-Point
 ArrayList<PVector> bangStarList ; // Angle-Stars of a Bang-Fire
 
-float BeamingOtSpeed ;
-float ObjectsNum ;
-PVector FighterSpeed ;
+float BeamingOtSpeed ;  // speed of a missile 
+float ObjectsNum ;      // object-ship numbers
+PVector FighterSpeed ;  // speed of the Fighter
+
 
 void setup() {
   
@@ -49,6 +51,63 @@ void draw() {
   background(200);
   
   fighter.run();
+
+  // When object-ships meet each other
+  for(int q = 0 ; q < objects.size() ; q++) {
+    
+    Object ocm_q = objects.get(q);
+    //PVector ocm_q_vel = ocm_q.velocity.get();
+    PVector sum = new PVector( 0 , 0 ) ;
+    int count = 0 ;
+    
+    for(int r = 0 ; r < objects.size() ; r++) {
+    
+      Object ocm_r = objects.get(r);
+      //PVector ocm_r_vel = ocm_r.velocity.get();
+      
+      float dist_qr = PVector.dist( ocm_q.location , ocm_r.location );
+      
+        /* when meet each other , ...
+           Ignore the situation about distance < 16 , 
+           because for the state of adding object-ships .
+           Adding object-ships can be that each location is overlapping . 
+         */
+        if( dist_qr > 0 && dist_qr <= 16 ) {
+                    
+          PVector diff = PVector.sub( ocm_q.location , ocm_r.location ) ;      
+          diff.normalize();
+          sum.add( diff ) ;  
+          count++ ;
+          
+          // when the x-direction of twice is different , change x-direction velocity of ocm_q 
+          /*
+          if( (ocm_q_vel.x>0 && ocm_r_vel.x<0) || (ocm_q_vel.x<0 && ocm_r_vel.x>0) ) {
+            ocm_q.velocity.x = (-1) * ocm_q.velocity.x ;
+          }
+          */
+          
+          // when the y-direction of twice is different , change y-direction velocity of ocm_q 
+          /*
+          if( (ocm_q_vel.y>0 && ocm_r_vel.y<0) || (ocm_q_vel.y<0 && ocm_r_vel.y>0) ) {
+            ocm_q.velocity.y = (-1) * ocm_q.velocity.y ;
+          }
+          */
+          
+        } /*  if( dist_qr > 0 && dist_qr <= 16 )  */
+    } /*  for(int r = 0 ; r < objects.size() ; r++)  */
+    
+    if( count > 0 ) {
+      sum.div( count ) ;
+      sum.normalize();
+      sum.mult( 0.75 ) ;
+      
+      PVector steer = PVector.sub( sum , ocm_q.velocity ) ;
+      ocm_q.applyForce( steer ) ;
+    }
+    
+    ocm_q.run();
+    
+  }
 
   // All object-ships
   for(int i = objects.size()-1 ; i >= 0 ; i--) {
@@ -276,7 +335,7 @@ void FireCircle() {
        PVector bmv = bangStarList.get(i) ;
        Means that : 
        "bmv" IS the "bangStarList" factor .
-       Operating "bmv" IS operating the "bangStarList" factor .
+       Operating "bmv" IS operating the "bangStarList" factor absolutely .
     */
     bmv.normalize();
     bmv.mult( BeamingOtSpeed );
