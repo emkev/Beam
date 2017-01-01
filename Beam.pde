@@ -4,6 +4,7 @@
    2016.12.16
    2016.12.18
    2016.12.30 , 12.31
+   2017.01.02
 */
 
 Fighter fighter ;                 // attacking-ship
@@ -12,9 +13,13 @@ ArrayList<BeamingOt> bos ;        // Beaming-ray
 ArrayList<BangOt> bns ;           // Bang-Fire
 ArrayList<PVector> bangCenters ;  // Bang-Fire-Center-Point
 ArrayList<PVector> bangStarList ; // Angle-Stars of a Bang-Fire
+ArrayList<BigBomb> bigBombList ;
+//ArrayList<Object> BombRefObjects ;
 
 float BeamingOtSpeed ;  // speed of a missile 
 float ObjectsNum ;      // object-ship numbers
+float BigBombSpeed ;    // speed of Big Bomb
+float BigBombBangRadius ;
 PVector FighterSpeed ;  // speed of the Fighter
 
 
@@ -24,6 +29,8 @@ void setup() {
 
   BeamingOtSpeed = 6 ;
   ObjectsNum = 10 ;
+  BigBombSpeed = 3 ;
+  BigBombBangRadius = 300 ;
   FighterSpeed = new PVector(2 , 2) ;
   
   fighter = new Fighter( new PVector(width/2 , height/2) , 
@@ -41,6 +48,7 @@ void setup() {
   bns = new ArrayList<BangOt>() ;
   bangCenters = new ArrayList<PVector>() ;
   bangStarList = new ArrayList<PVector>() ;
+  bigBombList = new ArrayList<BigBomb>() ;
   
   bangStarListProcessFor12() ;
 
@@ -145,6 +153,35 @@ void draw() {
   } /*  for(int i = objects.size()-1 ; i >= 0 ; i--)  */
 
 
+  /* 2017.01.02 */
+  for(int g = bigBombList.size()-1 ; g >= 0 ; g--) {
+
+    BigBomb bomb = bigBombList.get(g) ;
+    bomb.run();
+
+    if( bomb.setTimeSpan <= 0 ) {
+      /* Object-Ships in ALL RANGE of BOMB , ALL BANG !!! */
+      for(int s = objects.size()-1 ; s >= 0 ; s--) {
+    
+        Object orb = objects.get(s);
+    
+        if( orb.location.x < bomb.location.x + BigBombBangRadius 
+         && orb.location.x > bomb.location.x - BigBombBangRadius
+         && orb.location.y < bomb.location.y + BigBombBangRadius 
+         && orb.location.y > bomb.location.y - BigBombBangRadius )
+        {
+          bangCenters.add( objects.get(s).location );
+          objects.remove(s);
+        }
+    
+      } /*  for(int s = objects.size()-1 ; s >= 0 ; s--)  */
+      
+      bigBombList.remove(g);
+      
+    } /*  if( bomb.setTimeSpan <= 0 )  */
+  } /*  for(int g = bigBombList.size()-1 ; g >= 0 ; g--)  */
+  
+  
   // beaming-rays process ...
   for(int j = bos.size()-1 ; j >= 0 ; j--) {
     bos.get(j).run();
@@ -214,14 +251,17 @@ void keyPressed() {
   else if( key == 'k' || key == 'K' ) {
     fighter.turnRight();
   }
-  else if( key == 't' || key == 'T' ) {
+  else if( key == 'r' || key == 'R' ) {
     fighter.forwardRun();
   }
-  else if( key == 'b' || key == 'B' ) {
+  else if( key == 'v' || key == 'V' ) {
     fighter.reverseRun();
   }  
-  else if( key == 'u' || key == 'U' ) {
+  else if( key == 'c' || key == 'C' ) {
     FireCircle();
+  }    
+  else if( key == 'b' || key == 'B' ) {
+    LetsBigBomb();
   }    
   else {
   }
@@ -343,6 +383,23 @@ void FireCircle() {
     BeamingOt bmot = new BeamingOt( fighter.location , bmv ) ;
     bos.add(bmot);
 
+  }
+}
+
+
+/* 2017.01.02 am 02:43 */
+void LetsBigBomb() {
+
+  // Only one BOMB in a time .
+  if( bigBombList.size() == 0 ) {
+      
+    PVector mouseLocation = new PVector( mouseX , mouseY ) ; 
+    PVector lbb = PVector.sub( mouseLocation , fighter.location ) ;
+    lbb.normalize();
+    lbb.mult( BigBombSpeed );
+  
+    BigBomb bb = new BigBomb( fighter.location , lbb ) ;
+    bigBombList.add(bb);
   }
   
 }
