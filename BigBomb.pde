@@ -4,7 +4,6 @@
 class BigBomb extends Particle {
  
   float setTimeSpan ;
-  //float BombRange = 
   
   BigBomb( PVector l , PVector v ) {
     super( l , v ) ;
@@ -17,8 +16,17 @@ class BigBomb extends Particle {
   }
   
   void display() {
+
     fill(50 , 50 , 50);
+
     ellipse( location.x , location.y , 32 , 32 );
+
+    pushMatrix();
+    translate( location.x , location.y ) ;
+    rotate( PI/4 ) ;
+    rect( -8 , -18 , 16 , 12 ) ;
+    rect( -1 , -30 , 2  , 12 ) ;
+    popMatrix();
   }
   
 }
