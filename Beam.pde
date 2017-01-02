@@ -5,6 +5,7 @@
    2016.12.18
    2016.12.30 , 12.31
    2017.01.02
+   2017.01.03
 */
 
 Fighter fighter ;                 // attacking-ship
@@ -245,16 +246,16 @@ void keyPressed() {
       objects.add( new Object() );
     }
   }
-  else if( key == 'a' || key == 'A' ) {
+  else if( key == CODED && keyCode == LEFT ) {
     fighter.turnLeft();
   }
-  else if( key == 'k' || key == 'K' ) {
+  else if( key == CODED && keyCode == RIGHT ) {
     fighter.turnRight();
   }
-  else if( key == 'r' || key == 'R' ) {
+  else if( key == CODED && keyCode == UP ) {
     fighter.forwardRun();
   }
-  else if( key == 'v' || key == 'V' ) {
+  else if( key == CODED && keyCode == DOWN ) {
     fighter.reverseRun();
   }  
   else if( key == 'c' || key == 'C' ) {
