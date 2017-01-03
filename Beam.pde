@@ -15,7 +15,7 @@ ArrayList<BangOt> bns ;           // Bang-Fire
 ArrayList<PVector> bangCenters ;  // Bang-Fire-Center-Point
 ArrayList<PVector> bangStarList ; // Angle-Stars of a Bang-Fire
 ArrayList<BigBomb> bigBombList ;
-//ArrayList<Object> BombRefObjects ;
+ArrayList <PVector> bombWaveList ;
 
 float BeamingOtSpeed ;  // speed of a missile 
 float ObjectsNum ;      // object-ship numbers
@@ -50,6 +50,7 @@ void setup() {
   bangCenters = new ArrayList<PVector>() ;
   bangStarList = new ArrayList<PVector>() ;
   bigBombList = new ArrayList<BigBomb>() ;
+  bombWaveList = new ArrayList<PVector>() ;
   
   bangStarListProcessFor12() ;
 
@@ -154,18 +155,20 @@ void draw() {
   } /*  for(int i = objects.size()-1 ; i >= 0 ; i--)  */
 
 
-  /* 2017.01.02 */
+  /* 2017.01.02 , The Big BOMB ! */
   for(int g = bigBombList.size()-1 ; g >= 0 ; g--) {
 
     BigBomb bomb = bigBombList.get(g) ;
     bomb.run();
-
+    PVector bbLoc = bomb.location.get() ;
+    
     if( bomb.setTimeSpan <= 0 ) {
       /* Object-Ships in ALL RANGE of BOMB , ALL BANG !!! */
       for(int s = objects.size()-1 ; s >= 0 ; s--) {
     
         Object orb = objects.get(s);
     
+        // so , must be in the Bang Range
         if( orb.location.x < bomb.location.x + BigBombBangRadius 
          && orb.location.x > bomb.location.x - BigBombBangRadius
          && orb.location.y < bomb.location.y + BigBombBangRadius 
@@ -179,9 +182,24 @@ void draw() {
       
       bigBombList.remove(g);
       
+      // 2017.01.03 , BANG WAVE !
+      for(int t = 0 ; t < 20 ; t++) {
+        bombWaveList.add(bbLoc);
+      }
+      
     } /*  if( bomb.setTimeSpan <= 0 )  */
   } /*  for(int g = bigBombList.size()-1 ; g >= 0 ; g--)  */
   
+  // 2017.01.03 , Play a BOMB Bang Wave each frame until none .
+  if( bombWaveList.size() > 0 ) {
+    int waveCount = bombWaveList.size() ;
+    PVector waveLoc = bombWaveList.get(waveCount-1) ;
+    fill(200);
+    stroke(0);
+    ellipse( waveLoc.x , waveLoc.y , 30*(20 - waveCount +1) , 30*(20 - waveCount +1) );
+    // Delete one after displaying a circle wave .
+    bombWaveList.remove( waveCount-1 );
+  }  
   
   // beaming-rays process ...
   for(int j = bos.size()-1 ; j >= 0 ; j--) {
