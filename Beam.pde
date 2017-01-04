@@ -6,6 +6,7 @@
    2016.12.30 , 12.31
    2017.01.02
    2017.01.03
+   2017.01.05
 */
 
 Fighter fighter ;                 // attacking-ship
@@ -42,7 +43,7 @@ void setup() {
   
   objects = new ArrayList<Object>() ;
   for(int i = 0 ; i < ObjectsNum ; i++) {
-    objects.add( new Object() );
+    objects.add( new Object( new DNA() ) );
   }
   
   bos = new ArrayList<BeamingOt>() ;
@@ -62,69 +63,43 @@ void draw() {
   
   fighter.run();
 
-  // When object-ships meet each other
-  for(int q = 0 ; q < objects.size() ; q++) {
-    
-    Object ocm_q = objects.get(q);
-    //PVector ocm_q_vel = ocm_q.velocity.get();
-    PVector sum = new PVector( 0 , 0 ) ;
-    int count = 0 ;
-    
-    for(int r = 0 ; r < objects.size() ; r++) {
-    
-      Object ocm_r = objects.get(r);
-      //PVector ocm_r_vel = ocm_r.velocity.get();
-      
-      float dist_qr = PVector.dist( ocm_q.location , ocm_r.location );
-      
-        /* when meet each other , ...
-           Ignore the situation about distance < 16 , 
-           because for the state of adding object-ships .
-           Adding object-ships can be that each location is overlapping . 
-         */
-        if( dist_qr > 0 && dist_qr <= 16 ) {
-                    
-          PVector diff = PVector.sub( ocm_q.location , ocm_r.location ) ;      
-          diff.normalize();
-          sum.add( diff ) ;  
-          count++ ;
-          
-          // when the x-direction of twice is different , change x-direction velocity of ocm_q 
-          /*
-          if( (ocm_q_vel.x>0 && ocm_r_vel.x<0) || (ocm_q_vel.x<0 && ocm_r_vel.x>0) ) {
-            ocm_q.velocity.x = (-1) * ocm_q.velocity.x ;
-          }
-          */
-          
-          // when the y-direction of twice is different , change y-direction velocity of ocm_q 
-          /*
-          if( (ocm_q_vel.y>0 && ocm_r_vel.y<0) || (ocm_q_vel.y<0 && ocm_r_vel.y>0) ) {
-            ocm_q.velocity.y = (-1) * ocm_q.velocity.y ;
-          }
-          */
-          
-        } /*  if( dist_qr > 0 && dist_qr <= 16 )  */
-    } /*  for(int r = 0 ; r < objects.size() ; r++)  */
-    
-    if( count > 0 ) {
-      sum.div( count ) ;
-      sum.normalize();
-      sum.mult( 0.75 ) ;
-      
-      PVector steer = PVector.sub( sum , ocm_q.velocity ) ;
-      ocm_q.applyForce( steer ) ;
-    }
-    
-    ocm_q.run();
-    
-  }
-
-  // All object-ships
+  // Each object-ship ...
   for(int i = objects.size()-1 ; i >= 0 ; i--) {
     
     Object oc = objects.get(i);
+    PVector sum = new PVector(0 , 0);
+    int count = 0 ;
     
-    // All Beaming-rays
+    /* when object-ships meet each other . Encounting each other start  */
+    for(int r = 0 ; r < objects.size() ; r++) {
+    
+      Object ocm_r = objects.get(r);
+      
+      float dist_qr = PVector.dist( oc.location , ocm_r.location );
+      
+      if( dist_qr > 0 && dist_qr <= 16 ) {
+                    
+        PVector diff = PVector.sub( oc.location , ocm_r.location ) ;      
+        diff.normalize();
+        sum.add( diff ) ;  
+        count++ ;
+                    
+      } /*  if( dist_qr > 0 && dist_qr <= 16 )  */
+    } /*  for(int r = 0 ; r < objects.size() ; r++)  */
+
+    if( count > 0 ) {
+      sum.div( count ) ;
+      sum.normalize();
+      sum.mult( 0.9 ) ;
+      
+      PVector steer = PVector.sub( sum , oc.velocity ) ;
+      oc.applyForce( steer ) ;
+    }
+    /* Encounting each other end */
+    
+    
+    // What if current object-ship meet Beaming-rays
+    /* current object-ship encounts beams , start . */
     for(int k = bos.size()-1 ; k >= 0 ; k--) {
       
       BeamingOt bo = bos.get(k) ;
@@ -141,14 +116,16 @@ void draw() {
       }
             
     } /*  for(int k = bos.size()-1 ; k >= 0 ; k--)  */
-
-    // if a object has been hitted ...
+    /* current object-ship encounts beams , end . */
+    
+    // if a object-ship has been hitted ... , OR run normally .
     if( objects.get(i).isBang == true ) {
       // store the object-ship (has been hitted) location for the central point of Bang .
       bangCenters.add( objects.get(i).location );
       objects.remove(i);
     }
     else {
+      
       oc.run() ;
     }
     
@@ -261,7 +238,7 @@ void keyPressed() {
   // press key "o" to add objects-ships
   if( key == 'o' || key == 'O') {
     for(int i = 0 ; i < ObjectsNum ; i++) {
-      objects.add( new Object() );
+      objects.add( new Object( new DNA() ) );
     }
   }
   else if( key == CODED && keyCode == LEFT ) {
