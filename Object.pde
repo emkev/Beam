@@ -18,7 +18,7 @@ class Object extends Particle {
   
   void run() {
     super.run() ;
-    lifeSpan -= 2 ;
+    //lifeSpan -= 2 ;
   }
   
   void display() {
