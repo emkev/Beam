@@ -7,6 +7,7 @@
    2017.01.02
    2017.01.03
    2017.01.05
+   2017.01.07 , 01.08
 */
 
 Fighter fighter ;                 // attacking-ship
@@ -83,7 +84,12 @@ void draw() {
         diff.normalize();
         sum.add( diff ) ;  
         count++ ;
-                    
+        
+        /* 2017.01.08 , Parents meet , then produce a child by CROSSOVER dna . */
+        //DNA newDna = oc.dna.CrossOver( ocm_r.dna ) ;
+        //Object oc_child = new Object( newDna ) ;
+        //objects.add( oc_child ) ;
+        
       } /*  if( dist_qr > 0 && dist_qr <= 16 )  */
     } /*  for(int r = 0 ; r < objects.size() ; r++)  */
 
@@ -125,6 +131,15 @@ void draw() {
       objects.remove(i);
     }
     else {
+      
+      /* 2017.01.07 , add Gene-Vector as forces to each Object-ship . */
+      oc.applyForce( oc.dna.genes[oc.geneCount] ) ;
+      if( oc.geneCount >= oc.dna.geneSum - 1 ) {
+        oc.geneCount = 0 ;
+      }
+      else {
+        oc.geneCount++ ;
+      }
       
       oc.run() ;
     }
