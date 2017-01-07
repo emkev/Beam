@@ -1,6 +1,7 @@
 
 /* 2016.12.08 
-   2017.01.05 add DNA class as run-force , and add life span .
+   2017.01.05 , add DNA class as run-force , and add life span .
+   2017.01.07 , add applying the gene vector as force .  
 */
 
 class Object extends Particle {
@@ -8,17 +9,19 @@ class Object extends Particle {
   DNA dna ;
   int lifeSpan ;
   boolean isBang ;
+  int geneCount ;
   
   Object( DNA _dna ) {
     super();
     dna = _dna ;
     isBang = false ;
-    lifeSpan = 200 ;
+    lifeSpan = 500 ;
+    geneCount = 0 ;
   }
   
   void run() {
     super.run() ;
-    //lifeSpan -= 2 ;
+    lifeSpan -= 1 ;
   }
   
   void display() {
