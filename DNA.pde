@@ -1,6 +1,7 @@
 
 /* 2017.01.05 am 01:19 
    DNA class as the force about the object-ship flying . 
+   2017.01.07
 */
 
 class DNA {
@@ -9,11 +10,14 @@ class DNA {
   int geneSum ;
   
   DNA() {
-    geneSum = 10 ;
+    geneSum = 50 ;
     genes = new PVector[geneSum] ;
     
     for(int i = 0 ; i < geneSum ; i++) {
-      genes[i] = new PVector( random(0 , 1) , random(0 , 1) ) ;
+      PVector randomVec = new PVector( random(-100 , 100) , random(-100 , 100) ) ;
+      randomVec.normalize();
+      randomVec.mult(0.25);
+      genes[i] = randomVec ;
     }
     
   }
