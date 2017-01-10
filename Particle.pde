@@ -1,5 +1,7 @@
 
-/* 2016.12.08 */
+/* 2016.12.08 
+   2017.01.11 , add 'size' variable to display() .
+*/
 
 class Particle
 {
@@ -8,10 +10,8 @@ class Particle
   PVector acceleration ;
   
   float maxSpeed ;
-  float area ;
-  float cell_color ; 
-  
-  //float lifeSpan ;
+  float size ;
+  float bodyColor1 , bodyColor2 , bodyColor3 ; 
   
   Particle() {
 
@@ -20,8 +20,10 @@ class Particle
     acceleration = new PVector(0 , 0) ;
     
     maxSpeed = 10 ;
-    area = 16 ;
-    cell_color = 200 ;
+    size = 16 ;
+    bodyColor1 = 50.0 ;
+    bodyColor2 = 50.0 ;
+    bodyColor3 = 50.0 ;
   }
   
   Particle( PVector l ) {
@@ -30,8 +32,10 @@ class Particle
     acceleration = new PVector(0 , 0) ;
     
     maxSpeed = 10 ;
-    area = 16 ;
-    cell_color = 200 ;
+    size = 16 ;
+    bodyColor1 = 50.0 ;
+    bodyColor2 = 50.0 ;
+    bodyColor3 = 50.0 ;
   }
 
   Particle( PVector l , PVector v ) {
@@ -40,21 +44,23 @@ class Particle
     acceleration = new PVector(0 , 0) ;
     
     maxSpeed = 10 ;
-    area = 16 ;
-    cell_color = 200 ;
-    
-    //lifeSpan = 255 ;
+    size = 16 ;
+    bodyColor1 = 50.0 ;
+    bodyColor2 = 50.0 ;
+    bodyColor3 = 50.0 ;
   }
   
-  Particle(PVector l , PVector v , float len , float c) {
+  Particle(PVector l , PVector v , float s , float c) {
     
     location = l.get();
     velocity = v.get();
     acceleration = new PVector(0 , 0) ;
     
     maxSpeed = 10 ;
-    area = len ;
-    cell_color = c ;
+    size = s ;
+    bodyColor1 = 50.0 ;
+    bodyColor2 = 50.0 ;
+    bodyColor3 = 50.0 ;
   }
   
   void applyForce(PVector f) {
@@ -78,16 +84,16 @@ class Particle
   
   void checkEdge() {
     
-    if( ((location.x-area/2) < 0) || ((location.x+area/2) > width) )
+    if( ((location.x-size/2) < 0) || ((location.x+size/2) > width) )
       velocity.x = (-1) * velocity.x ;
      
-    if( ((location.y-area/2) < 0) || ((location.y+area/2) > height) )
+    if( ((location.y-size/2) < 0) || ((location.y+size/2) > height) )
       velocity.y = (-1) * velocity.y ; 
   }
   
   void display() {
-    fill(cell_color);
-    ellipse(location.x , location.y , area , area) ;
+    fill( bodyColor1 , bodyColor2 , bodyColor3 );
+    ellipse(location.x , location.y , size , size) ;
   }
   
 }
