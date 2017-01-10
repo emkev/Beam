@@ -11,3 +11,5 @@ press 'o' to add objects ;
 
 press 'c' to fire-circle ;
 press 'b' to Let's BIG BOMB !
+
+press 'm' to enable Mouse Cutting Mode ; Wow !
