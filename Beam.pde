@@ -7,7 +7,7 @@
    2017.01.02
    2017.01.03
    2017.01.05
-   2017.01.07 , 01.08
+   2017.01.07 , 01.08 , 01.10 , 01.11
 */
 
 Fighter fighter ;                 // attacking-ship
@@ -18,13 +18,16 @@ ArrayList<PVector> bangCenters ;  // Bang-Fire-Center-Point
 ArrayList<PVector> bangStarList ; // Angle-Stars of a Bang-Fire
 ArrayList<BigBomb> bigBombList ;
 ArrayList <PVector> bombWaveList ;
+ArrayList<ObjParents> ParentsList ;
 
 float BeamingOtSpeed ;  // speed of a missile 
 float ObjectsNum ;      // object-ship numbers
 float BigBombSpeed ;    // speed of Big Bomb
 float BigBombBangRadius ;
 PVector FighterSpeed ;  // speed of the Fighter
-
+float MutationRate ;
+/* testing */
+//int tmp_rd1 = -1 , tmp_rd2 = -1 ;
 
 void setup() {
   
@@ -35,6 +38,7 @@ void setup() {
   BigBombSpeed = 3 ;
   BigBombBangRadius = 300 ;
   FighterSpeed = new PVector(2 , 2) ;
+  MutationRate = 0.1 ;
   
   fighter = new Fighter( new PVector(width/2 , height/2) , 
                          FighterSpeed , 
@@ -49,17 +53,20 @@ void setup() {
   
   bos = new ArrayList<BeamingOt>() ;
   bns = new ArrayList<BangOt>() ;
+  
   bangCenters = new ArrayList<PVector>() ;
   bangStarList = new ArrayList<PVector>() ;
   bigBombList = new ArrayList<BigBomb>() ;
   bombWaveList = new ArrayList<PVector>() ;
+  
+  ParentsList = new ArrayList<ObjParents>() ;
   
   bangStarListProcessFor12() ;
 
 }
 
 void draw() {
-  
+    
   background(200);
   
   fighter.run();
@@ -70,24 +77,42 @@ void draw() {
     Object oc = objects.get(i);
     PVector sum = new PVector(0 , 0);
     int count = 0 ;
-    
+
     /* when object-ships meet each other . Encounting each other start  */
-    for(int r = 0 ; r < objects.size() ; r++) {
+    for(int r = objects.size()-1 ; r >= 0 ; r--) {
     
       Object ocm_r = objects.get(r);
       
       float dist_qr = PVector.dist( oc.location , ocm_r.location );
       
-      if( dist_qr > 0 && dist_qr <= 16 ) {
-                    
+      if( dist_qr > 0 && dist_qr <= (oc.size/2 + ocm_r.size/2) ) {
+        //println("i = " + i + " , r = " + r);
         PVector diff = PVector.sub( oc.location , ocm_r.location ) ;      
         diff.normalize();
         sum.add( diff ) ;  
         count++ ;
         
+        /*testing , start*/
+        /*  2010.01.10 */
+        /*
+        if( (i == tmp_rd1 && r == tmp_rd2) || (i == tmp_rd2 && r == tmp_rd1) ) {
+        }
+        else
+        {
+          tmp_rd1 = i ;
+          tmp_rd2 = r ;
+          println("tmp_rd1 = " + tmp_rd1 + " , tmp_rd2 = " + tmp_rd2);
+          ObjParents ops = new ObjParents( oc , ocm_r ) ;
+          //ParentsList.add( ops ) ;
+        }
+        */
+        /* testing , end */
+        
         /* 2017.01.08 , Parents meet , then produce a child by CROSSOVER dna . */
         //DNA newDna = oc.dna.CrossOver( ocm_r.dna ) ;
-        //Object oc_child = new Object( newDna ) ;
+        /* 2017.01.10 , add Mutation activity */
+        //newDna.Mutate( MutationRate ) ;
+        //oc_child = new Object( newDna ) ;
         //objects.add( oc_child ) ;
         
       } /*  if( dist_qr > 0 && dist_qr <= 16 )  */
@@ -143,6 +168,14 @@ void draw() {
       
       oc.run() ;
     }
+    /* testing , start */
+    /*
+    if( isCross == true ) {
+      oc_child = new Object( newDna ) ;
+      objects.add( oc_child ) ;
+    }
+    */
+    /* testing , end */
     
   } /*  for(int i = objects.size()-1 ; i >= 0 ; i--)  */
 
@@ -233,6 +266,23 @@ void draw() {
     
   }
 
+  /* testing , start */
+  /*  2010.01.10 , object-Children */
+  /*
+  for(int w = ParentsList.size()-1 ; w >= 0 ; w--) {
+    ObjParents objPt = ParentsList.get(w) ;
+    Object mo = objPt.Mobj ;
+    Object fo = objPt.Fobj ;
+
+    DNA newDna = mo.dna.CrossOver( fo.dna ) ;
+    newDna.Mutate( MutationRate ) ;
+    Object oc_child = new Object( newDna ) ;
+    objects.add( oc_child ) ;
+    
+    ParentsList.remove(w);
+  }
+  */
+  /* testing, end */
 }
 
 // press mouse to fire ! fire ! fire !
