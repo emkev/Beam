@@ -1,5 +1,7 @@
 
-/* 2016.12.08 */
+/* 2016.12.08 , 
+   2017.01.11
+*/
 
 class Fighter extends Particle {
  
@@ -10,16 +12,25 @@ class Fighter extends Particle {
     super(l);
     turnStrength = 3.0 ;
     runStrength = 1.5 ;
+    
+    bodyColor1 = 204.0 ;
+    bodyColor2 = 102.0 ;
+    bodyColor3 = 0.0 ;
+    
   }
   
-  Fighter(PVector l , PVector v , float len , float c) {
-    super( l , v , len , c );
+  Fighter(PVector l , PVector v , float s , float c) {
+    super( l , v , s , c );
     turnStrength = 3.0 ;
     runStrength = 1.5 ;
+
+    bodyColor1 = 204.0 ;
+    bodyColor2 = 102.0 ;
+    bodyColor3 = 0.0 ;
   }
   
   void display() {
-    fill(204 , 102 , 0) ;
+    fill( bodyColor1 , bodyColor2 , bodyColor3 ) ;
     ellipse( location.x , location.y , 20 , 20 );
     ellipse( location.x , location.y ,  8 ,  8 );
     
