@@ -22,24 +22,32 @@ ArrayList<ObjParents> ParentsList ;
 
 float BeamingOtSpeed ;  // speed of a missile 
 float ObjectsNum ;      // object-ship numbers
+int ObjSize ;           // object-ship size
 float BigBombSpeed ;    // speed of Big Bomb
 float BigBombBangRadius ;
 PVector FighterSpeed ;  // speed of the Fighter
 float MutationRate ;
 /* testing */
 //int tmp_rd1 = -1 , tmp_rd2 = -1 ;
+boolean MouseCutMode ;  // 2017.01.11 , Whether enable to Cut object-ships with Mouse
+
 
 void setup() {
   
   size(1200 , 600);
 
   BeamingOtSpeed = 6 ;
+  
   ObjectsNum = 10 ;
+  ObjSize = 32 ;
+  
   BigBombSpeed = 3 ;
   BigBombBangRadius = 300 ;
   FighterSpeed = new PVector(2 , 2) ;
-  MutationRate = 0.1 ;
   
+  MutationRate = 0.1 ;
+  MouseCutMode = false ;
+    
   fighter = new Fighter( new PVector(width/2 , height/2) , 
                          FighterSpeed , 
                          8 , 
@@ -48,7 +56,7 @@ void setup() {
   
   objects = new ArrayList<Object>() ;
   for(int i = 0 ; i < ObjectsNum ; i++) {
-    objects.add( new Object( new DNA() ) );
+    objects.add( new Object( new DNA() , ObjSize ) );
   }
   
   bos = new ArrayList<BeamingOt>() ;
@@ -128,6 +136,14 @@ void draw() {
     }
     /* Encounting each other end */
     
+    /* 2017.01.11 , Mouse make objects BANG ! */
+    if( MouseCutMode == true ) {
+      PVector mouseLo = new PVector( mouseX , mouseY ) ;
+      float distMouObj = PVector.dist( oc.location , mouseLo ) ;
+      if( distMouObj >= 0.0 && distMouObj <= ObjSize*2 ) {
+        oc.isBang = true ;
+      }
+    } 
     
     // What if current object-ship meet Beaming-rays
     /* current object-ship encounts beams , start . */
@@ -141,7 +157,7 @@ void draw() {
       /* beaming-ray has hitted a object-ship , remove the beaming point .
          And being ready to remove the object-ship .
       */
-      if( dist > 0 && dist <= 10 ) {
+      if( dist >= 0.0 && dist <= 10.0 ) {
         bos.remove(k);
         oc.isBang = true ;
       }
@@ -243,7 +259,8 @@ void draw() {
     PVector bcenter = bangCenters.get(m) ;
     
     for(int n = 0 ; n < bangStarList.size() ; n++) {
-      BangOt bangOt = new BangOt( bcenter , bangStarList.get(n).get() ) ;
+      BangOt bangOt = new BangOt( bcenter , bangStarList.get(n).get() , 
+                                  ObjSize/4 , ObjSize*2.5 ) ;
       bns.add(bangOt);
     }
     
@@ -303,7 +320,7 @@ void keyPressed() {
   // press key "o" to add objects-ships
   if( key == 'o' || key == 'O') {
     for(int i = 0 ; i < ObjectsNum ; i++) {
-      objects.add( new Object( new DNA() ) );
+      objects.add( new Object( new DNA() , ObjSize ) );
     }
   }
   else if( key == CODED && keyCode == LEFT ) {
@@ -323,7 +340,10 @@ void keyPressed() {
   }    
   else if( key == 'b' || key == 'B' ) {
     LetsBigBomb();
-  }    
+  }
+  else if( key == 'm' || key == 'M' ) {
+    MouseCutMode = (!MouseCutMode) ;
+  }
   else {
   }
 }
