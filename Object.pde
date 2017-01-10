@@ -12,14 +12,16 @@ class Object extends Particle {
   boolean isBang ;
   int geneCount ;
   
-  Object( DNA _dna ) {
+  Object( DNA _dna , int s ) {
     super();
     dna = _dna ;
     isBang = false ;
     lifeSpan = 500 ;
     geneCount = 0 ;
 
-    size = 16 ;
+    // normal is 16
+    size = s ;
+    
     bodyColor1 = 50.0 ;
     bodyColor2 = 50.0 ;
     bodyColor3 = 100.0 ;
