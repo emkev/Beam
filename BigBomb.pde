@@ -1,5 +1,7 @@
 
-/* 2017.01.02 am 02:46 */
+/* 2017.01.02 am 02:46 
+   2017.01.11 
+*/
 
 class BigBomb extends Particle {
  
@@ -8,6 +10,12 @@ class BigBomb extends Particle {
   BigBomb( PVector l , PVector v ) {
     super( l , v ) ;
     setTimeSpan = 80 ;
+
+    size = 32 ;
+    bodyColor1 = 50.0 ;
+    bodyColor2 = 50.0 ;
+    bodyColor3 = 50.0 ;
+    
   }
   
   void run() {
@@ -17,9 +25,9 @@ class BigBomb extends Particle {
   
   void display() {
 
-    fill(50 , 50 , 50);
+    fill( bodyColor1 , bodyColor2 , bodyColor3 ) ;
 
-    ellipse( location.x , location.y , 32 , 32 );
+    ellipse( location.x , location.y , size , size );
 
     pushMatrix();
     translate( location.x , location.y ) ;
