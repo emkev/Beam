@@ -2,7 +2,7 @@
 /* 2016.12.08 
    2017.01.05 , add DNA class as run-force , and add life span .
    2017.01.07 , add applying the gene vector as force .
-   2017.01.11 , using common size and displaying function of Parent class .
+   2017.01.11 , using common size and displaying function of Particle class .
 */
 
 class Object extends Particle {
