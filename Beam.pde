@@ -1,35 +1,39 @@
 
-/* 2016.12.08 
-   2016.12.09
-   2016.12.16
-   2016.12.18
+/* 2016.12.08 , 12.09 , 12.16 , 12.18
    2016.12.30 , 12.31
-   2017.01.02
-   2017.01.03
-   2017.01.05
+   2017.01.02 , 01.03 , 01.05
    2017.01.07 , 01.08 , 01.10 , 01.11
 */
 
-Fighter fighter ;                 // attacking-ship
-ArrayList<Object> objects ;       // object-ship
-ArrayList<BeamingOt> bos ;        // Beaming-ray
-ArrayList<BangOt> bns ;           // Bang-Fire
-ArrayList<PVector> bangCenters ;  // Bang-Fire-Center-Point
-ArrayList<PVector> bangStarList ; // Angle-Stars of a Bang-Fire
-ArrayList<BigBomb> bigBombList ;
-ArrayList <PVector> bombWaveList ;
-ArrayList<ObjParents> ParentsList ;
+Fighter fighter ;                   // attacking-ship
 
-float BeamingOtSpeed ;  // speed of a missile 
-float ObjectsNum ;      // object-ship numbers
-int ObjSize ;           // object-ship size
-float BigBombSpeed ;    // speed of Big Bomb
-float BigBombBangRadius ;
-PVector FighterSpeed ;  // speed of the Fighter
-float MutationRate ;
-/* testing */
-//int tmp_rd1 = -1 , tmp_rd2 = -1 ;
-boolean MouseCutMode ;  // 2017.01.11 , Whether enable to Cut object-ships with Mouse
+ArrayList<Object> objects ;         // object-ship
+ArrayList<BeamingOt> bos ;          // Beaming-ray
+ArrayList<BangOt> bns ;             // Bang-Fire
+
+ArrayList<PVector> bangCenters ;    // Bang-Fire-Center-Point
+ArrayList<PVector> bangStarList ;   // Angle-Stars of a Bang-Fire
+
+ArrayList<BigBomb> bigBombList ;    // Storing of Big BOMB
+ArrayList <PVector> bombWaveList ;  // Wave-Display of Big BOMB 
+
+ArrayList<ObjParents> ParentsList ; // List of Reproduction-Parents of object-ships 
+
+
+float BeamingOtSpeed ;    // speed of a missile 
+
+float ObjectsNum ;        // object-ship numbers
+int ObjSize ;             // object-ship size
+boolean ReproduceMode ;   // whether enable to reproduce children  
+int ObjTopNum ;           // Top numbers of object-ships
+float MutationRate ;      // mutation rate of Reproduction of object-ships
+
+float BigBombSpeed ;      // speed of Big Bomb
+float BigBombBangRadius ; // Radius of BOMB Bang
+
+PVector FighterSpeed ;    // speed of the Fighter
+
+boolean MouseCutMode ;    // Whether enable to Cut object-ships with Mouse
 
 
 void setup() {
@@ -40,14 +44,17 @@ void setup() {
   
   ObjectsNum = 10 ;
   ObjSize = 32 ;
+  ReproduceMode = false ;
+  ObjTopNum = 100 ;
+  MutationRate = 0.1 ;
   
   BigBombSpeed = 3 ;
   BigBombBangRadius = 300 ;
+  
   FighterSpeed = new PVector(2 , 2) ;
   
-  MutationRate = 0.1 ;
   MouseCutMode = false ;
-    
+  
   fighter = new Fighter( new PVector(width/2 , height/2) , 
                          FighterSpeed , 
                          8 , 
@@ -73,13 +80,15 @@ void setup() {
 
 }
 
+
 void draw() {
     
   background(200);
   
   fighter.run();
 
-  // Each object-ship ...
+
+  /*  Each object-ship ... , start  */
   for(int i = objects.size()-1 ; i >= 0 ; i--) {
     
     Object oc = objects.get(i);
@@ -94,35 +103,18 @@ void draw() {
       float dist_qr = PVector.dist( oc.location , ocm_r.location );
       
       if( dist_qr > 0 && dist_qr <= (oc.size/2 + ocm_r.size/2) ) {
-        //println("i = " + i + " , r = " + r);
+
         PVector diff = PVector.sub( oc.location , ocm_r.location ) ;      
         diff.normalize();
         sum.add( diff ) ;  
         count++ ;
         
-        /*testing , start*/
-        /*  2010.01.10 */
-        /*
-        if( (i == tmp_rd1 && r == tmp_rd2) || (i == tmp_rd2 && r == tmp_rd1) ) {
-        }
-        else
-        {
-          tmp_rd1 = i ;
-          tmp_rd2 = r ;
-          println("tmp_rd1 = " + tmp_rd1 + " , tmp_rd2 = " + tmp_rd2);
+        /*  2010.01.10 , 01.11 . Reproduction of object-ships */
+        if( ReproduceMode == true && objects.size() < ObjTopNum ) {
           ObjParents ops = new ObjParents( oc , ocm_r ) ;
-          //ParentsList.add( ops ) ;
+          ParentsList.add( ops ) ;
         }
-        */
-        /* testing , end */
-        
-        /* 2017.01.08 , Parents meet , then produce a child by CROSSOVER dna . */
-        //DNA newDna = oc.dna.CrossOver( ocm_r.dna ) ;
-        /* 2017.01.10 , add Mutation activity */
-        //newDna.Mutate( MutationRate ) ;
-        //oc_child = new Object( newDna ) ;
-        //objects.add( oc_child ) ;
-        
+                
       } /*  if( dist_qr > 0 && dist_qr <= 16 )  */
     } /*  for(int r = 0 ; r < objects.size() ; r++)  */
 
@@ -135,6 +127,7 @@ void draw() {
       oc.applyForce( steer ) ;
     }
     /* Encounting each other end */
+
     
     /* 2017.01.11 , Mouse make objects BANG ! */
     if( MouseCutMode == true ) {
@@ -144,6 +137,7 @@ void draw() {
         oc.isBang = true ;
       }
     } 
+
     
     // What if current object-ship meet Beaming-rays
     /* current object-ship encounts beams , start . */
@@ -160,10 +154,10 @@ void draw() {
       if( dist >= 0.0 && dist <= 10.0 ) {
         bos.remove(k);
         oc.isBang = true ;
-      }
-            
+      }            
     } /*  for(int k = bos.size()-1 ; k >= 0 ; k--)  */
     /* current object-ship encounts beams , end . */
+
     
     // if a object-ship has been hitted ... , OR run normally .
     if( objects.get(i).isBang == true ) {
@@ -184,16 +178,9 @@ void draw() {
       
       oc.run() ;
     }
-    /* testing , start */
-    /*
-    if( isCross == true ) {
-      oc_child = new Object( newDna ) ;
-      objects.add( oc_child ) ;
-    }
-    */
-    /* testing , end */
     
   } /*  for(int i = objects.size()-1 ; i >= 0 ; i--)  */
+  /*  Each object-ship ... , end  */
 
 
   /* 2017.01.02 , The Big BOMB ! */
@@ -231,6 +218,7 @@ void draw() {
     } /*  if( bomb.setTimeSpan <= 0 )  */
   } /*  for(int g = bigBombList.size()-1 ; g >= 0 ; g--)  */
   
+
   // 2017.01.03 , Play a BOMB Bang Wave each frame until none .
   if( bombWaveList.size() > 0 ) {
     int waveCount = bombWaveList.size() ;
@@ -242,6 +230,7 @@ void draw() {
     bombWaveList.remove( waveCount-1 );
   }  
   
+
   // beaming-rays process ...
   for(int j = bos.size()-1 ; j >= 0 ; j--) {
     bos.get(j).run();
@@ -259,8 +248,11 @@ void draw() {
     PVector bcenter = bangCenters.get(m) ;
     
     for(int n = 0 ; n < bangStarList.size() ; n++) {
-      BangOt bangOt = new BangOt( bcenter , bangStarList.get(n).get() , 
-                                  ObjSize/4 , ObjSize*2.5 ) ;
+      BangOt bangOt = new BangOt( bcenter , 
+                                  bangStarList.get(n).get() , 
+                                  ObjSize/4 , 
+                                  ObjSize*2.5 ) ;
+      
       bns.add(bangOt);
     }
     
@@ -283,23 +275,17 @@ void draw() {
     
   }
 
-  /* testing , start */
-  /*  2010.01.10 , object-Children */
-  /*
-  for(int w = ParentsList.size()-1 ; w >= 0 ; w--) {
-    ObjParents objPt = ParentsList.get(w) ;
-    Object mo = objPt.Mobj ;
-    Object fo = objPt.Fobj ;
 
-    DNA newDna = mo.dna.CrossOver( fo.dna ) ;
-    newDna.Mutate( MutationRate ) ;
-    Object oc_child = new Object( newDna ) ;
-    objects.add( oc_child ) ;
+  /*  2010.01.10 , 01.11 , object-ship-Children Reproduction  */
+  for(int w = ParentsList.size()-1 ; w >= 0 ; w--) {
+    
+    ObjParents objPt = ParentsList.get(w) ;
+    Object obj_child = objPt.Reproduce( MutationRate , ObjSize ) ;
+    objects.add( obj_child ) ;
     
     ParentsList.remove(w);
   }
-  */
-  /* testing, end */
+
 }
 
 // press mouse to fire ! fire ! fire !
@@ -343,6 +329,9 @@ void keyPressed() {
   }
   else if( key == 'm' || key == 'M' ) {
     MouseCutMode = (!MouseCutMode) ;
+  }
+  else if( key == 'r' || key == 'R' ) {
+    ReproduceMode = (!ReproduceMode) ;
   }
   else {
   }
