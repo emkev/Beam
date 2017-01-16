@@ -2,7 +2,7 @@
 /* 2016.12.08 , 12.09 , 12.16 , 12.18
    2016.12.30 , 12.31
    2017.01.02 , 01.03 , 01.05
-   2017.01.07 , 01.08 , 01.10 , 01.11
+   2017.01.07 , 01.08 , 01.10 , 01.11 , 01.12
 */
 
 Fighter fighter ;                   // attacking-ship
@@ -109,7 +109,12 @@ void draw() {
         sum.add( diff ) ;  
         count++ ;
         
-        /*  2010.01.10 , 01.11 . Reproduction of object-ships */
+        /*  2010.01.10 , 01.11 . Reproduction of object-ships .
+            When 
+            Enable to Reproduction Mode 
+            And Object-ships number is less than the Top ,
+            Can produce children .
+         */
         if( ReproduceMode == true && objects.size() < ObjTopNum ) {
           ObjParents ops = new ObjParents( oc , ocm_r ) ;
           ParentsList.add( ops ) ;
@@ -133,7 +138,7 @@ void draw() {
     if( MouseCutMode == true ) {
       PVector mouseLo = new PVector( mouseX , mouseY ) ;
       float distMouObj = PVector.dist( oc.location , mouseLo ) ;
-      if( distMouObj >= 0.0 && distMouObj <= ObjSize*2 ) {
+      if( distMouObj >= 0.0 && distMouObj <= (ObjSize/2)*2 ) {
         oc.isBang = true ;
       }
     } 
@@ -151,7 +156,7 @@ void draw() {
       /* beaming-ray has hitted a object-ship , remove the beaming point .
          And being ready to remove the object-ship .
       */
-      if( dist >= 0.0 && dist <= 10.0 ) {
+      if( dist >= 0.0 && dist <= (ObjSize/2 + 7.0) ) {
         bos.remove(k);
         oc.isBang = true ;
       }            
